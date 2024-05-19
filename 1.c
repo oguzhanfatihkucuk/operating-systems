@@ -161,37 +161,56 @@ int main() {
 
     memAllacationCPU1();
     memAllacationCPU2();
-    
-    void processyazdir(int i){
-    
-    
-    }
-    //bu kısımdaki işlemlerin hepsi for döngüsünde değil her biri kendi algoritmalarına göre çağrılacak
-    for (int i = 0; i < satirSayisi; i++) {
+
+    void processyazdir(int i) {
+
         if (islemler[i].oncelik == 0) {
             checkCPUResources(islemler[i].cpuKullanimi);
             checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+            printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
 
         } else if (islemler[i].oncelik == 1) {
             checkCPUResources(islemler[i].cpuKullanimi);
             checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
 
         } else if (islemler[i].oncelik == 2) {
             checkCPUResources(islemler[i].cpuKullanimi);
             checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+
+            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
+
+            if (islemler[i].burstZamani < 8) {
+                printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+            } else {
+                printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
+                islemler[i].burstZamani -= 8;
+                processyazdir(i);
+            }
 
         } else if (islemler[i].oncelik == 3) {
             checkCPUResources(islemler[i].cpuKullanimi);
             checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
 
+            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
+
+            if (islemler[i].burstZamani < 16) {
+                printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+            } else {
+                printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
+                islemler[i].burstZamani -= 16;
+                processyazdir(i);
+
+            }
         }
+    }
+
+    printf("\n\n");
+
+    for (int i = 0; i < satirSayisi; i++) {
+        processyazdir(i);
 
     }
-    printf("\n\n");
 
     printf("\nCPU-1 que1(priority-0) (FCFS)=> ");
     for (int i = 0; i < satirSayisi; i++) {
@@ -230,10 +249,12 @@ int main() {
     }
 
     printf("\n");
+
     // Dinamik olarak ayrılan belleği serbest bırakma
     for (int i = 0; i < MAX_SATIR; i++) {
         free(islemler[i].pid);
     }
+
     free(islemler);
 
     return 0;
