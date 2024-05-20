@@ -117,7 +117,7 @@ int memAllacationCPU2() {
     free(ptr2);
 }
 
-int main() {
+int main(int argc, char * argv[]) {
     FILE * dosya;
     char satir[MAX_SATIR];
     char * parca;
@@ -130,8 +130,9 @@ int main() {
     }
 
     int satirSayisi = 0; // Okunan satır sayısı
+    char * dosyaAdi = argv[1];
 
-    dosya = fopen("input.txt", "r");
+    dosya = fopen(dosyaAdi, "r");
     if (dosya == NULL) {
         printf("Dosya açılamadı!\n");
         return 1;
@@ -164,52 +165,93 @@ int main() {
 
     void processyazdir(int i) {
 
-        if (islemler[i].oncelik == 0) {
-            checkCPUResources(islemler[i].cpuKullanimi);
-            checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+        if (i > 0 && i < 25) {
+            if (islemler[i].oncelik == 0) {
+                checkCPUResources(islemler[i].cpuKullanimi);
+                checkRAMResources(islemler[i].ramKullanimi);
+                printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
 
-        } else if (islemler[i].oncelik == 1) {
-            checkCPUResources(islemler[i].cpuKullanimi);
-            checkRAMResources(islemler[i].ramKullanimi);
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+            } else if (islemler[i].oncelik == 1) {
+                checkCPUResources(islemler[i].cpuKullanimi);
+                checkRAMResources(islemler[i].ramKullanimi);
+                printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
 
-        } else if (islemler[i].oncelik == 2) {
-            checkCPUResources(islemler[i].cpuKullanimi);
-            checkRAMResources(islemler[i].ramKullanimi);
+            } else if (islemler[i].oncelik == 2) {
+                checkCPUResources(islemler[i].cpuKullanimi);
+                checkRAMResources(islemler[i].ramKullanimi);
 
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
+                printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
 
-            if (islemler[i].burstZamani < 8) {
-                printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
-            } else {
-                printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
-                islemler[i].burstZamani -= 8;
-                processyazdir(i);
-            }
+                if (islemler[i].burstZamani < 8) {
+                    printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+                } else {
+                    printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
+                    islemler[i].burstZamani -= 8;
+                    processyazdir(i);
+                }
 
-        } else if (islemler[i].oncelik == 3) {
-            checkCPUResources(islemler[i].cpuKullanimi);
-            checkRAMResources(islemler[i].ramKullanimi);
+            } else if (islemler[i].oncelik == 3) {
+                checkCPUResources(islemler[i].cpuKullanimi);
+                checkRAMResources(islemler[i].ramKullanimi);
 
-            printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
+                printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
 
-            if (islemler[i].burstZamani < 16) {
-                printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
-            } else {
-                printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
-                islemler[i].burstZamani -= 16;
-                processyazdir(i);
+                if (islemler[i].burstZamani < 16) {
+                    printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+                } else {
+                    printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
+                    islemler[i].burstZamani -= 16;
+                    processyazdir(i);
 
+                }
             }
         }
     }
 
     printf("\n\n");
 
-    for (int i = 0; i < satirSayisi; i++) {
-        processyazdir(i);
+    int * que1 = malloc(sizeof(int) * 15);
+    int * que2 = malloc(sizeof(int) * 15);
+    int * que3 = malloc(sizeof(int) * 15);
+    int * que4 = malloc(sizeof(int) * 15);
 
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int d = 0;
+
+    for (int i = 0; i < 25; i++) {
+
+        if (islemler[i].oncelik == 0) {
+            que1[a] = i + 1;
+            a++;
+        } else if (islemler[i].oncelik == 1) {
+            printf("%d ",islemler[i].burstZamani);
+            
+            
+            
+            que2[b] = i + 1;                   
+            b++;
+        } else if (islemler[i].oncelik == 2) {
+            que3[c] = i + 1;
+            c++;
+        } else if (islemler[i].oncelik == 3) {
+            que4[d] = i + 1;
+            d++;
+        }
+    }
+
+    for (int i = 0; i < 15; i++) {
+        //processyazdir(que1[i] - 1);
+    }
+    for (int i = 0; i < 15; i++) {
+        //printf("%d ", que2[i]  );
+    }
+    for (int i = 0; i < 15; i++) {
+        //processyazdir(que3[i] - 1);
+    }
+    for (int i = 0; i < 15; i++) {
+        //processyazdir(que4[i] - 1);
     }
 
     printf("\nCPU-1 que1(priority-0) (FCFS)=> ");
