@@ -161,49 +161,77 @@ int main(int argc, char * argv[]) {
     fclose(dosya);
 
     memAllacationCPU1();
-    memAllacationCPU2();
-
+    memAllacationCPU2(); 
+    
+    int cpu1Ram=512;
+    int cpu2Ram=1536;
+    
     void processyazdir(int i) {
 
-        if (i > 0 && i < 25) {
+        if (i >= 0 && i <= 25) {
             if (islemler[i].oncelik == 0) {
                 checkCPUResources(islemler[i].cpuKullanimi);
                 checkRAMResources(islemler[i].ramKullanimi);
-                printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+                
+                cpu1Ram=cpu1Ram-islemler[i].ramKullanimi;
+                printf("Cpu1 current Ram capacity %d \n",cpu1Ram);
+                
+                printf("Process %s is queued to be assigned to CPU-1.\nProcess %s is assigned to CPU-1.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+                
+                cpu1Ram=cpu1Ram+islemler[i].ramKullanimi;
+                printf("After proceesing current Ram1 capacity %d \n",cpu1Ram);
 
             } else if (islemler[i].oncelik == 1) {
+            
                 checkCPUResources(islemler[i].cpuKullanimi);
                 checkRAMResources(islemler[i].ramKullanimi);
-                printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n\n\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
-
+                
+                cpu2Ram=cpu2Ram-islemler[i].ramKullanimi;
+                printf("Cpu2 current Ram capacity %d \n",cpu2Ram);
+                printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\nProcess %s is completed and terminated.\n", islemler[i].pid, islemler[i].pid, islemler[i].pid);
+		
+		cpu2Ram=cpu2Ram+islemler[i].ramKullanimi;
+                printf("After proceesing current Ram2 capacity %d \n",cpu2Ram);
+                
             } else if (islemler[i].oncelik == 2) {
                 checkCPUResources(islemler[i].cpuKullanimi);
                 checkRAMResources(islemler[i].ramKullanimi);
 
+		cpu2Ram=cpu2Ram-islemler[i].ramKullanimi;
+                printf("Cpu2 current Ram capacity %d \n",cpu2Ram);
                 printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
+                
 
                 if (islemler[i].burstZamani < 8) {
-                    printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+                    printf("Process %s is completed and terminated.\n", islemler[i].pid);
                 } else {
                     printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
                     islemler[i].burstZamani -= 8;
                     processyazdir(i);
                 }
+                
+                cpu2Ram=cpu2Ram+islemler[i].ramKullanimi;
+                printf("After proceesing current Ram2 capacity %d \n",cpu2Ram);
 
             } else if (islemler[i].oncelik == 3) {
                 checkCPUResources(islemler[i].cpuKullanimi);
                 checkRAMResources(islemler[i].ramKullanimi);
 
+		cpu2Ram=cpu2Ram-islemler[i].ramKullanimi;
+                printf("Cpu2 current Ram capacity %d \n",cpu2Ram);
                 printf("Process %s is queued to be assigned to CPU-2.\nProcess %s is assigned to CPU-2.\n", islemler[i].pid, islemler[i].pid);
 
                 if (islemler[i].burstZamani < 16) {
-                    printf("Process %s is completed and terminated.\n\n", islemler[i].pid);
+                    printf("Process %s is completed and terminated.\n", islemler[i].pid);
                 } else {
                     printf("Process %s run until the defined quantum time and is queued again because the process is not completed.\n", islemler[i].pid);
                     islemler[i].burstZamani -= 16;
                     processyazdir(i);
 
                 }
+                cpu2Ram=cpu2Ram+islemler[i].ramKullanimi;
+                printf("After proceesing current Ram2 capacity %d \n\n",cpu2Ram);
+
             }
         }
     }
@@ -213,8 +241,8 @@ int main(int argc, char * argv[]) {
     int * que1 = malloc(sizeof(int) * 15);
     int * que2 = malloc(sizeof(int) * 15);
     int * que3 = malloc(sizeof(int) * 15);
-    int * que4 = malloc(sizeof(int) * 15);
-
+    int * que4 = malloc(sizeof(int) * 15); 
+   
     int a = 0;
     int b = 0;
     int c = 0;
@@ -225,11 +253,7 @@ int main(int argc, char * argv[]) {
         if (islemler[i].oncelik == 0) {
             que1[a] = i + 1;
             a++;
-        } else if (islemler[i].oncelik == 1) {
-            printf("%d ",islemler[i].burstZamani);
-            
-            
-            
+        } else if (islemler[i].oncelik == 1) { 
             que2[b] = i + 1;                   
             b++;
         } else if (islemler[i].oncelik == 2) {
@@ -242,16 +266,16 @@ int main(int argc, char * argv[]) {
     }
 
     for (int i = 0; i < 15; i++) {
-        //processyazdir(que1[i] - 1);
+        processyazdir(que1[i] - 1);
     }
     for (int i = 0; i < 15; i++) {
-        //printf("%d ", que2[i]  );
+        processyazdir(que2[i] -1);
     }
     for (int i = 0; i < 15; i++) {
-        //processyazdir(que3[i] - 1);
+        processyazdir(que3[i] - 1);
     }
     for (int i = 0; i < 15; i++) {
-        //processyazdir(que4[i] - 1);
+        processyazdir(que4[i] - 1);
     }
 
     printf("\nCPU-1 que1(priority-0) (FCFS)=> ");
